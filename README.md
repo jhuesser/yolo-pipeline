@@ -130,9 +130,11 @@ This makes use of polygons, as we already now it, but also rectangle, to simplif
 ## Annotate and classify.
 
 Annotate as we did in the past in label studio, but this time, select attributes from the list below, for example:
-![[assets/export.png]]
+![Labeling interface in label studio](assets/labelstudio.png)
+
 After that, export the data, but as "JSON":
-![[assets/labelstudio.png]]
+
+![export screenshot of labelstudio](assets/export.png)
 
 > Image by <a href="https://pixabay.com/users/pexels-2286921/?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=1844724">Pexels</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=1844724">Pixabay</a> 
 > **IMPORTANT**: I only use this image as illustriation purpuse, so I don't have to include an image of myself. Do not train any models of/from someone you don't have consent from. 
