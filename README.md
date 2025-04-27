@@ -470,29 +470,27 @@ So for example, if the model for `hair_color` is in `runs/classify/train4/weight
 
 ## Let's run the pipeline!
 
-> Note: This currently does not work, need to wait until my ChatGPT limit resets. It still only classifies the classes instead of the attributes. 
 
-> Todo: Yes, I need to add the parameters to the script, will do once it works. Also need the possibility to pass a folder with images.
+Use the `pipeline.py` to run the pipeline against an image or directory of image. In the default config results are saved to the `results`folder.
 
-Use the `pipeline.py` to run the pipeline against an image. First configure lines `10-17` according to your needs:
-
-```python
-# --- CONFIGURATION ---
-SEG_MODEL_PATH = "models/segmentation/best.pt"    # path to your segmentation model
-CLASSIFIERS_DIR = "models/classifiers/"                 # folder containing classifiers (hair_color.pt, eye_color.pt, etc.)
-INPUT_IMAGE = "<YOUR_IMAGE>"                        # the image to process
-DEVICE = "mps"                                   # mps (Mac) or cuda/cpu
-CONFIDENCE_THRESHOLD = 0.5                       # min confidence for segmentation
-RESULTS_JSON = "results.json"                    # save prediction results
-RESULT_IMAGE = "result_annotated.jpg"             # output image with drawn labels
-```
-
-
-after that run it with
 
 ```shell
-python pipeline.py # in the future with parameters
+python pipeline.py --seg-model models/segmentation/yoursegmodel.pt --classifiers-dir models/classifiers --input /path/to/your/images 
+
+> Note: There are more optional parameters, check with --help
 ```
+
+You then receive a JSON file with the regions defined and an image where the results are drawn into for visual confirmations:
+
+![Visual Result](assets/result.png)
+> Image by <a href="https://pixabay.com/users/pexels-2286921/?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=1844724">Pexels</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=1844724">Pixabay</a> 
+> **IMPORTANT**: I only use this image as illustriation purpuse, so I don't have to include an image of myself. Do not train any models of/from someone you don't have consent from. 
+
+
+> **Note:** The hair was dedected 2 times, one time on the left side of the face and one time on the right side of the face, that's why it shows 2x. Also this is a quick and dirty PoC training set with only 5 images in the training set. you should have more. This image was not in the training set.
+
+
+
 ## Next steps
 
 Next steps: Once that thing works exactly as I need it, I want to built a wrapper around it, maybe a Flask app or something like this, so I can pass images via API requests.
