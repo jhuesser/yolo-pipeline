@@ -21,27 +21,33 @@ def load_classifiers(classifiers_dir):
     return classifiers
 
 def crop_mask(img, mask, bbox):
-    x1, y1, x2, y2 = map(int, bbox)
+    mask = (mask * 255).astype(np.uint8)
 
-    if x2 <= x1 or y2 <= y1:
-        print(f"⚠️ Invalid bbox: {bbox}")
+    # Find nonzero region of the mask
+    coords = cv2.findNonZero(mask)
+
+    if coords is None:
+        print(f"⚠️ Empty mask, skipping.")
         return None
 
-    img_h, img_w = img.shape[:2]
-    x1, y1, x2, y2 = map(lambda v: np.clip(v, 0, img_w if v in [x1, x2] else img_h), (x1, y1, x2, y2))
+    x, y, w, h = cv2.boundingRect(coords)
 
-    cropped_img = img[y1:y2, x1:x2]
-    cropped_mask = mask[y1:y2, x1:x2]
-
-    if cropped_img.size == 0 or cropped_mask.size == 0:
-        print(f"⚠️ Empty crop, skipping.")
+    if w <= 1 or h <= 1:
+        print(f"⚠️ Bounding box too small after mask: ({w}, {h}), skipping.")
         return None
 
-    cropped_mask = (cropped_mask * 255).astype(np.uint8)
+    cropped_img = img[y:y+h, x:x+w]
+    cropped_mask = mask[y:y+h, x:x+w]
+
+    if cropped_img.shape[0] == 0 or cropped_img.shape[1] == 0:
+        print(f"⚠️ Cropped image size 0, skipping.")
+        return None
+    if cropped_mask.shape[0] == 0 or cropped_mask.shape[1] == 0:
+        print(f"⚠️ Cropped mask size 0, skipping.")
+        return None
 
     if cropped_img.shape[:2] != cropped_mask.shape:
-        print(f"⚠️ Size mismatch: cropped_img {cropped_img.shape}, cropped_mask {cropped_mask.shape}")
-        return cropped_img
+        cropped_mask = cv2.resize(cropped_mask, (cropped_img.shape[1], cropped_img.shape[0]))
 
     result = cv2.bitwise_and(cropped_img, cropped_img, mask=cropped_mask)
     return result
